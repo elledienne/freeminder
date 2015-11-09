@@ -1,28 +1,75 @@
 angular.module('starter.controllers', [])
 
-.controller('DashCtrl', function($scope) {})
+.controller('TodosCtrl', function($scope) {
+  $scope.todos = [
+    {
+      id: 0,
+      title: 'Buy stuff',
+      priority: 5
+    },
+    {
+      id: 1,
+      title: 'Study angular',
+      priority: 10
+    },
+    {
+      id: 2,
+      title: 'buy coffee',
+      priority: 2
+    },
+    {
+      id: 3,
+      title: 'Do shits',
+      priority: 4
+    },
+  ];
 
-.controller('ChatsCtrl', function($scope, Chats) {
-  // With the new view caching in Ionic, Controllers are only called
-  // when they are recreated or on app start, instead of every page change.
-  // To listen for when this page is active (for example, to refresh data),
-  // listen for the $ionicView.enter event:
-  //
-  //$scope.$on('$ionicView.enter', function(e) {
-  //});
+  $scope.showDetail = null;
 
-  $scope.chats = Chats.all();
-  $scope.remove = function(chat) {
-    Chats.remove(chat);
+  $scope.setDetailToShow = function(id){
+    if($scope.showDetail === id){
+      $scope.showDetail = null;
+    } else {
+      $scope.showDetail = id;
+    }
   };
 })
-
-.controller('ChatDetailCtrl', function($scope, $stateParams, Chats) {
-  $scope.chat = Chats.get($stateParams.chatId);
-})
-
-.controller('AccountCtrl', function($scope) {
-  $scope.settings = {
-    enableFriends: true
+.controller('CalCtrl', function($scope, $cordovaCalendar, $q) {
+  
+  var err = function(err){
+    console.log('ERROR: ', err);
   };
+
+  var listCals = function(){
+
+    $cordovaCalendar.listCalendars()
+      .then(function (result) {
+        //console.log('SUCCESS: ', JSON.stringify(result));
+        return eventsInCal(result,[]);
+      }, err)
+      .then(function(result){
+        console.log('TEST', JSON.stringify(result));
+      });
+  };
+
+
+  var eventsInCal = function(cals) {
+    var promises = [];
+
+    cals.forEach(function(cal) {
+      if(cal.name !== 'Birthdays'){
+        promises.push($cordovaCalendar.findAllEventsInNamedCalendar(cal.name));
+      }
+    });
+
+    return $q.all(promises);
+
+  };
+
+  $scope.listAllEvents = function() {
+    //var events = [];
+    listCals();
+
+  };
+
 });

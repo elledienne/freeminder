@@ -1,0 +1,17 @@
+<ion-view view-title="Memento">
+  <ion-content >
+    <ion-list>
+      <ion-item class="item-input">
+       <!--  <div class="list"> -->
+          <!-- <label class="item item-input"> -->
+            <input type="text" placeholder="New Todo...">
+          <!-- </label> -->
+        <!-- </div> -->
+      </ion-item>
+      <ion-item ng-repeat="todo in todos" ng-click="setDetailToShow(todo.id)">
+        <div>{{todo.title}}</div><div> Priority: {{todo.priority}}</div>
+        <div ng-show='showDetail === todo.id'>Extra setting, displayed only when required ;)</div>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>
