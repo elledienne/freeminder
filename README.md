@@ -1,2 +1,56 @@
-# freeminder
-Freeminder is a simple todo application that allows you to just free your mind!
+# Freeminder #
+
+  > Freeminder is a simple todo application that allows you to just free your mind! How often do you find yourself thinking about all the things you have to do today? With this app you can just remove them from your mind, put them in the app and let it keep track of them for you
+
+## Why another todo app? ##
+  > Because existing todos are complicated, hard to use, boring and stupid. Nobody wants to spend time on setting up a todo app, rigth? It should help you save time, not lose it.
+
+## Why Freeminder 
+  > This app is developed with one main idea in mind: simplicity. We don't want you to spend time on setting it up, we just want you to use it: the app should just work.
+
+  **Main features:**
+  
+  1. Automatic task prioritization
+  2. Automatic scheduling
+  3. iOS and Android calendar integration
+  4. Smart (not yet smarter than you, but we are working on that!)
+  5. Clean and easy UI
+
+## Problem ##
+  > The normal workflow to create a new todo for all the existing apps is more or less this:
+  
+    - Type the name of the task
+    - Select the todo collection where to save it
+    - Set it's priority
+    - Close the stupid todo app, go to you calendar and check when you have some free time to complete the task
+    - Reopen the app
+    - Schedule the task
+    - Set a reminder
+    - Cry (just kidding)
+
+## Solution ##
+  > Freeminder uses machine learning to learn your preferences and your habits, in this way you will not be asked to complete a series of steps to set up your todos. Freeminder will be your friend since the first time you use it, and will dramatically improve your todo-creation experience.
+
+  This is what you will do to create a new task with this app:
+    - Start smiling
+    - Type the name of the task
+    - Close the app, find your old reminder and delete it
+    - Keep smiling
+
+## How to Get Started ##
+  > To get started follow this easy steps.
+
+  1. Download the Ionic View app from HERE if you have an iPhone or from HERE if you have an Android device.
+  2. Start the app and click on the eye icon on the top left corner
+  3. Insert this code: CODE.
+  4. Press the 'Load app' button
+  5. Enjoy
+
+## The dev corner ##
+  > This app was built by Lorenzo De Nobili, software engineer in training. 
+
+## What users think about Freeminder ##
+  'Best app ever, it's not smarter than me but for sure is less lazy' - _Fred_
+
+## Need help? ##
+  If you have problem using the app, if you found a bug or for feature requests please open an issue here on GitHub
