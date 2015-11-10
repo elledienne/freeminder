@@ -1,7 +1,14 @@
 <ion-view view-title="Freeminder">
   <ion-header-bar class="bar bar-subheader new-todo">
-    <input class="input-todo" type="text" placeholder="New Todo..." ng-model="new-input" ng-submit="test()">
-    <rating class="rating-stars" ng-model="rate" max="max"></rating>
+    <form ng-submit="createNewTask()">
+      <input class="input-todo" type="text" placeholder="New Todo..." ng-model="newTaskInput">
+    </form>
+    <!-- <rating class="rating-stars" ng-model="rate" max="max"></rating> -->
+    <div class=" range">
+      <i class="icon ion-ios-star-outline"></i>
+      <input type="range" min="0" max="100" value="50" name="priority" ng-model="priority">
+      <i class="icon ion-ios-star"></i>
+  </div>
   </ion-header-bar>
   <ion-content class="cal">
     <ion-list>

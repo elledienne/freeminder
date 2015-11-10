@@ -1,28 +1,28 @@
 angular.module('starter.controllers', [])
 
-.controller('TodosCtrl', function($scope) {
-  $scope.todos = [
-    {
-      id: 0,
-      title: 'Buy stuff',
-      priority: 5
-    },
-    {
-      id: 1,
-      title: 'Study angular',
-      priority: 10
-    },
-    {
-      id: 2,
-      title: 'buy coffee',
-      priority: 2
-    },
-    {
-      id: 3,
-      title: 'Do shits',
-      priority: 4
-    },
-  ];
+.controller('TodosCtrl', function($scope, $localstorage) {
+  $scope.todos
+    // {
+    //   id: 3,
+    //   title: 'Buy stuff',
+    //   priority: 5
+    // },
+    // {
+    //   id: 2,
+    //   title: 'Study angular',
+    //   priority: 10
+    // },
+    // {
+    //   id: 1,
+    //   title: 'buy coffee',
+    //   priority: 2
+    // },
+    // {
+    //   id: 0,
+    //   title: 'Do shits',
+    //   priority: 4
+    // },
+  //];
 
   $scope.showDetail = null;
 
@@ -36,9 +36,27 @@ angular.module('starter.controllers', [])
 
   $scope.rate = 3;
   $scope.max = 5;
-  $scope.test = function(){
-    console.log($scope.new-input)
+
+  $scope.createNewTask = function(){
+    var newTask = {
+      id: $scope.todos.length !== 0 ? $scope.todos[0].id+1 : 0,
+      title: $scope.newTaskInput,
+      priority: $scope.priority || 50
+    };
+    $scope.todos.unshift(newTask);
+    $localstorage.setObject('tasks', $scope.todos);
   };
+
+  var loadTasks = function(){
+    var tasks = $localstorage.getObject('tasks', 'null');
+    // console.log(JSON.stringify(_.flatten(tasks)));
+    if(tasks){
+      // console.log('here')
+      $scope.todos = _.flatten(tasks);
+    }
+  };
+  
+  loadTasks();
 })
 
 .controller('CalCtrl', function($scope, $cordovaCalendar, $q, moment, _) {
