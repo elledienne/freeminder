@@ -36,16 +36,101 @@ angular.module('starter.controllers', [])
 })
 
 .controller('CalCtrl', function($scope, $cordovaCalendar, $q, moment, _) {
-  
+  $scope.hours = [
+    {
+      cellProp: {
+        hour: 8,
+        codeTime: 8,
+        time: 'AM',
+      },
+      events: [
+        {
+          from: 8.10,
+          to: 8.20
+        },
+        {
+          from: 8.40,
+          to: 9
+        }
+      ]
+    },
+    {
+      hour: 9,
+      codeTime: 9,
+      time: 'AM',
+    },
+    {
+      hour: 10,
+      codeTime: 10,
+      time: 'AM',
+    },
+    {
+      hour: 11,
+      codeTime: 11,
+      time: 'AM',
+    },
+    {
+      hour: 12,
+      codeTime: 12,
+      time: 'AM',
+    },
+    {
+      hour: 1,
+      codeTime: 13,
+      time: 'PM',
+    },
+    {
+      hour: 2,
+      codeTime: 14,
+      time: 'PM',
+    },
+    {
+      hour: 3,
+      codeTime: 15,
+      time: 'PM',
+    },
+    {
+      hour: 4,
+      codeTime: 16,
+      time: 'PM',
+    },
+    {
+      hour: 5,
+      codeTime: 17,
+      time: 'PM',
+    },
+    {
+      hour: 6,
+      codeTime: 18,
+      time: 'PM',
+    },
+    {
+      hour: 7,
+      codeTime: 19,
+      time: 'PM',
+    },
+    {
+      hour: 8,
+      codeTime: 20,
+      time: 'PM',
+    },
+    {
+      hour: 9,
+      codeTime: 21,
+      time: 'PM',
+    },
+  ];
+
+
   var err = function(err){
     console.log('ERROR: ', err);
   };
 
   var clj = function(message){
     console.log(JSON.stringify(message));
-  }
+  };
 
-  var listCals = function(){
+  $scope.listCals = function(){
 
     $cordovaCalendar.listCalendars()
       .then(function (result) {
@@ -55,7 +140,12 @@ angular.module('starter.controllers', [])
       .then(function(result){
         console.log('TEST', JSON.stringify(result));
         result = _.flatten(result);
-        sortEvents(result);
+        $scope.calEvents = sortEvents(result);
+
+
+
+
+
       });
   };
 
@@ -91,12 +181,8 @@ angular.module('starter.controllers', [])
     });
 
     clj(events);
+    return events;
   };
 
-  $scope.listAllEvents = function() {
-    //var events = [];
-    listCals();
-
-  };
 
 });

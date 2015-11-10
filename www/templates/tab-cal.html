@@ -2,12 +2,18 @@
   <ion-content>
     <ion-list>
       <ion-item>
-        <button ng-click="listAllEvents()" class="button button-block button-stable">
-          Sign In
+        <button ng-click="listCals()" class="button button-block button-stable">
+          Load cal
         </button>
       </ion-item>
-      <ion-item>
+      <ion-item ng-repeat="hour in hours">
+        <div id="{{hour.codeTime}}">
+          <div>{{hour.hour}} {{hour.time}}</div>
+          <span ng-repeat="event in hour.events">
+            TEST
+          </span>
 
+        </div>
       </ion-item>
     </ion-list>
   </ion-content>
