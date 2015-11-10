@@ -1,4 +1,22 @@
-/* Empty. Add your own CSS if you like */
+.new-todo{
+  height: 100px;
+}
+
+input[type="text"].input-todo{
+  line-height: 30px;
+  font-size: 25px;
+  padding-top: 20px;
+  margin-left: 10px;
+  width: 94%
+}
+
+.rating-stars{
+  text-align: center;
+}
+
+.cal{
+  margin-top: 54px;
+}
 
 .time-row{
   padding: 0;
@@ -13,4 +31,9 @@
   /*z-index: 99900;*/
   color: grey;
   font-size: 13px;
+}
+
+.eventTitle{
+  color: white;
+  padding: 10px;
 }

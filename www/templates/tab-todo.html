@@ -1,13 +1,17 @@
-<ion-view view-title="Memento">
+<ion-view view-title="Freeminder">
+  <ion-header-bar class="bar bar-subheader new-todo">
+    <input class="input-todo" type="text" placeholder="New Todo...">
+    <rating class="rating-stars" ng-model="rate" max="max"></rating>
+  </ion-header-bar>
   <ion-content class="cal">
     <ion-list>
-      <ion-item class="item-input">
+      <!-- <ion-item class="item-input"> -->
        <!--  <div class="list"> -->
           <!-- <label class="item item-input"> -->
-            <input type="text" placeholder="New Todo...">
+            <!-- <input type="text" placeholder="New Todo..."> -->
           <!-- </label> -->
         <!-- </div> -->
-      </ion-item>
+      <!-- </ion-item> -->
       <ion-item ng-repeat="todo in todos" ng-click="setDetailToShow(todo.id)">
         <div>{{todo.title}}</div><div> Priority: {{todo.priority}}</div>
         <div ng-show='showDetail === todo.id'>Extra setting, displayed only when required ;)</div>

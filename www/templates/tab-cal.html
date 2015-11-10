@@ -10,7 +10,7 @@
         <div id="{{hour.cellProp.codeTime}}">
           <div class="time-label">{{hour.cellProp.hour}}{{hour.cellProp.time.toLowerCase()}}</div>
           <div ng-style="event" ng-repeat="event in hour.events">
-            {{event.events}}
+            <div class="eventTitle">{{hour.cellProp.eventTitle}}</div>
           </div>
 
         </div>

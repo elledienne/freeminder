@@ -33,15 +33,20 @@ angular.module('starter.controllers', [])
       $scope.showDetail = id;
     }
   };
+
+  $scope.rate = 3;
+  $scope.max = 5;
+  
 })
 
 .controller('CalCtrl', function($scope, $cordovaCalendar, $q, moment, _) {
     
-    $scope.zIndex = 0;
-    $scope.getZIndex = function(){
-      $scope.zIndex--;
-      return {'z-index': $scope.zIndex};
-    };
+  // $scope.zIndex = 0;
+  // $scope.getZIndex = Calendar.getZIndex;
+    // $scope.getZIndex = function(){
+    //   $scope.zIndex--;
+    //   return {'z-index': $scope.zIndex};
+    // };
   
   $scope.hours = [
     {
@@ -190,34 +195,28 @@ angular.module('starter.controllers', [])
   ];
 
 
-  var err = function(err){
-    console.log('ERROR: ', err);
-  };
+  // var err = function(err){
+  //   console.log('ERROR: ', err);
+  // };
 
   var clj = function(message){
     console.log(JSON.stringify(message));
   };
 
   $scope.listCals = function(){
-
     $cordovaCalendar.listCalendars()
       .then(function (result) {
         //console.log('SUCCESS: ', JSON.stringify(result));
         return eventsInCal(result);
-      }, err)
+      }, Calendar.err)
       .then(function(result){
         console.log('TEST', JSON.stringify(result));
         result = _.flatten(result);
         //normalizeEvents(result)
         $scope.calEvents = sortEvents(result);
         parseEvent($scope.calEvents);
-
-
-
-
       });
   };
-
 
   var eventsInCal = function(cals) {
     var promises = [];
@@ -229,7 +228,6 @@ angular.module('starter.controllers', [])
     });
 
     return $q.all(promises);
-
   };
 
 
@@ -279,50 +277,10 @@ angular.module('starter.controllers', [])
           'border-radius': '5px',
           'box-shadow': '0 0 5px #888888'
         });
-      // {
-        //   height: '100px',
-        //   marginTop: '40px',
-        //   background: 'red',
-        //   width: '100%',
-        //   position: 'absolute',
-        //   opacity: 0.7
-        // }
-      // if(startHour > 7 && startHour < 22){
-
-      //   var height;
-      //   var marginTop;
-
-      //   if(startHour === endHour){
-      //     height = endMinute - startMinute;
-      //     marginTop = 100 - startMinute;
-      //   } else if(endHour - startHour === 1 && startMinute === 0 && endMinute === 0){
-      //     height = 100;
-      //     marginTop = 0;
-      //   } else if(endHour - startHour > 1){
-
-      //   }
-
-
-        // var itemRow = $scope.hours[startHour-8];
-
-        // var height;
-        
-        // if( endHour !== itemRow.cellProp.hour){
-        //   height = 100;
-        // } else if( endMinute - startMinute === 0 && endHour - startHour === 1){
-        //   height = 100;
-        // } else {
-        //   height = endMinute - startMinute;
-        // }
-
-      //   $scope.hours[startHour-8].events.push({
-      //     height: height+'px',
-      //     marginTop: startMinute+'px',
-      //     background: 'red',
-      //     opacity: 0.7
-      //   });
-      // }
+      $scope.hours[startHour-8].cellProp.eventTitle = event.title;
+      
     });
+
     clj($scope.hours)
   };
 
