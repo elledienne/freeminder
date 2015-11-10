@@ -34,21 +34,28 @@ angular.module('starter.controllers', [])
     }
   };
 })
-.controller('CalCtrl', function($scope, $cordovaCalendar, $q) {
+
+.controller('CalCtrl', function($scope, $cordovaCalendar, $q, moment, _) {
   
   var err = function(err){
     console.log('ERROR: ', err);
   };
+
+  var clj = function(message){
+    console.log(JSON.stringify(message));
+  }
 
   var listCals = function(){
 
     $cordovaCalendar.listCalendars()
       .then(function (result) {
         //console.log('SUCCESS: ', JSON.stringify(result));
-        return eventsInCal(result,[]);
+        return eventsInCal(result);
       }, err)
       .then(function(result){
         console.log('TEST', JSON.stringify(result));
+        result = _.flatten(result);
+        sortEvents(result);
       });
   };
 
@@ -64,6 +71,26 @@ angular.module('starter.controllers', [])
 
     return $q.all(promises);
 
+  };
+
+  var sortEvents = function(events){
+
+    events.sort(function(curr, next){
+      var currTime = new moment(curr.startDate);
+      var nextTime = new moment(next.startDate);
+      
+      var diff = currTime.diff(nextTime);
+
+      console.log('curr', curr.startDate);
+      console.log('next', next.startDate);
+      console.log('diff', diff);
+      
+      
+      return diff;
+
+    });
+
+    clj(events);
   };
 
   $scope.listAllEvents = function() {
