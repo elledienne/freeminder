@@ -1,6 +1,6 @@
 <ion-view view-title="Freeminder">
   <ion-header-bar class="bar bar-subheader new-todo">
-    <input class="input-todo" type="text" placeholder="New Todo...">
+    <input class="input-todo" type="text" placeholder="New Todo..." ng-model="new-input" ng-submit="test()">
     <rating class="rating-stars" ng-model="rate" max="max"></rating>
   </ion-header-bar>
   <ion-content class="cal">

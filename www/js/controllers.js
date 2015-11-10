@@ -36,7 +36,9 @@ angular.module('starter.controllers', [])
 
   $scope.rate = 3;
   $scope.max = 5;
-  
+  $scope.test = function(){
+    console.log($scope.new-input)
+  };
 })
 
 .controller('CalCtrl', function($scope, $cordovaCalendar, $q, moment, _) {
