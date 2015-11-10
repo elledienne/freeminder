@@ -1,17 +1,17 @@
 <ion-view view-title="Calendar">
   <ion-content>
     <ion-list>
-      <ion-item>
+      <!-- <ion-item>
         <button ng-click="listCals()" class="button button-block button-stable">
           Load cal
         </button>
-      </ion-item>
-      <ion-item ng-repeat="hour in hours">
-        <div id="{{hour.codeTime}}">
-          <div>{{hour.hour}} {{hour.time}}</div>
-          <span ng-repeat="event in hour.events">
-            TEST
-          </span>
+      </ion-item> -->
+      <ion-item ng-style="hour.cellProp.style" ng-repeat="hour in hours" class="time-row">
+        <div id="{{hour.cellProp.codeTime}}">
+          <div class="time-label">{{hour.cellProp.hour}}{{hour.cellProp.time.toLowerCase()}}</div>
+          <div ng-style="event" ng-repeat="event in hour.events">
+            {{event.events}}
+          </div>
 
         </div>
       </ion-item>

@@ -36,88 +36,156 @@ angular.module('starter.controllers', [])
 })
 
 .controller('CalCtrl', function($scope, $cordovaCalendar, $q, moment, _) {
+    
+    $scope.zIndex = 0;
+    $scope.getZIndex = function(){
+      $scope.zIndex--;
+      return {'z-index': $scope.zIndex};
+    };
+  
   $scope.hours = [
     {
       cellProp: {
         hour: 8,
         codeTime: 8,
         time: 'AM',
+        style: { 'zIndex': 0}
       },
       events: [
-        {
-          from: 8.10,
-          to: 8.20
-        },
-        {
-          from: 8.40,
-          to: 9
-        }
+        // {
+        //   height: '100px',
+        //   marginTop: '40px',
+        //   background: 'red',
+        //   width: '100%',
+        //   position: 'absolute',
+        //   opacity: 0.7
+        // }
       ]
     },
     {
-      hour: 9,
-      codeTime: 9,
-      time: 'AM',
+      cellProp: {
+        hour: 9,
+        codeTime: 9,
+        time: 'AM',
+        style: { 'zIndex': -1}
+      },
+      events: []
     },
     {
-      hour: 10,
-      codeTime: 10,
-      time: 'AM',
+      cellProp: {
+        hour: 10,
+        codeTime: 10,
+        time: 'AM',
+        style: { 'zIndex': -2}      
+      },
+      events: []
     },
     {
-      hour: 11,
-      codeTime: 11,
-      time: 'AM',
+      cellProp: {
+        hour: 11,
+        codeTime: 11,
+        time: 'AM',
+        style: { 'zIndex': -3}
+      },
+      events: []
     },
     {
+      cellProp: {
       hour: 12,
       codeTime: 12,
       time: 'AM',
+      style: { 'zIndex': -4}
+      },
+      events: []
     },
     {
-      hour: 1,
+      cellProp: {
+        hour: 1,
       codeTime: 13,
       time: 'PM',
+      style: { 'zIndex': -5}
+      },
+      events: []
     },
     {
+      cellProp: {
       hour: 2,
       codeTime: 14,
       time: 'PM',
+      style: { 'zIndex': -6}
+      },
+      events: []
+
     },
     {
+      cellProp: {
       hour: 3,
       codeTime: 15,
       time: 'PM',
+      style: { 'zIndex': -7}
+      },
+      events: []
+
     },
     {
+      cellProp: {
       hour: 4,
       codeTime: 16,
       time: 'PM',
+      style: { 'zIndex': -8}
+      },
+      events: []
+
     },
     {
+      cellProp: {
       hour: 5,
       codeTime: 17,
       time: 'PM',
+      style: { 'zIndex': -9}
+      },
+      events: []
+
     },
     {
+      cellProp: {
       hour: 6,
       codeTime: 18,
       time: 'PM',
+      style: { 'zIndex': -10}
+      },
+      events: []
+
     },
     {
+      cellProp: {
       hour: 7,
       codeTime: 19,
       time: 'PM',
+      style: { 'zIndex': -11}
+      },
+      events: []
+
     },
     {
+      cellProp: {
       hour: 8,
       codeTime: 20,
       time: 'PM',
+      style: { 'zIndex': -12}
+      },
+      events: []
+
     },
     {
+      cellProp: {
       hour: 9,
       codeTime: 21,
       time: 'PM',
+      style: { 'zIndex': -13}
+      },
+      events: []
+
     },
   ];
 
@@ -140,8 +208,9 @@ angular.module('starter.controllers', [])
       .then(function(result){
         console.log('TEST', JSON.stringify(result));
         result = _.flatten(result);
+        //normalizeEvents(result)
         $scope.calEvents = sortEvents(result);
-
+        parseEvent($scope.calEvents);
 
 
 
@@ -162,6 +231,7 @@ angular.module('starter.controllers', [])
     return $q.all(promises);
 
   };
+
 
   var sortEvents = function(events){
 
@@ -184,5 +254,79 @@ angular.module('starter.controllers', [])
     return events;
   };
 
+  var parseEvent = function(events){
+    console.log('here');
+    events.forEach(function(event){
+      var startHour = new moment.utc(event.startDate, 'YYYY-MM-DD HH:mm:ss').hour();
+      var endHour = new moment.utc(event.startDate, 'YYYY-MM-DD HH:mm:ss').hour();
+      var startMinute = new moment.utc(event.startDate, 'YYYY-MM-DD HH:mm:ss').minute();
+      var endMinute = new moment.utc(event.endDate, 'YYYY-MM-DD HH:mm:ss').minute();
 
+      var startDate = new moment.utc(event.startDate, 'YYYY-MM-DD HH:mm:ss');
+      var endDate = new moment.utc(event.endDate, 'YYYY-MM-DD HH:mm:ss');
+      
+      var duration = startDate.diff(endDate, 'minutes');
+      
+      $scope.hours[startHour-8].events.push({
+          height: (100 * Math.abs(duration))/60+'px',
+          marginTop: startMinute+'px',
+          marginLeft: '50px',
+          // marginRigth: '20px',
+          background: 'red',
+          opacity: 0.7,
+          width: '85%',
+          position: 'absolute',
+          'border-radius': '5px',
+          'box-shadow': '0 0 5px #888888'
+        });
+      // {
+        //   height: '100px',
+        //   marginTop: '40px',
+        //   background: 'red',
+        //   width: '100%',
+        //   position: 'absolute',
+        //   opacity: 0.7
+        // }
+      // if(startHour > 7 && startHour < 22){
+
+      //   var height;
+      //   var marginTop;
+
+      //   if(startHour === endHour){
+      //     height = endMinute - startMinute;
+      //     marginTop = 100 - startMinute;
+      //   } else if(endHour - startHour === 1 && startMinute === 0 && endMinute === 0){
+      //     height = 100;
+      //     marginTop = 0;
+      //   } else if(endHour - startHour > 1){
+
+      //   }
+
+
+        // var itemRow = $scope.hours[startHour-8];
+
+        // var height;
+        
+        // if( endHour !== itemRow.cellProp.hour){
+        //   height = 100;
+        // } else if( endMinute - startMinute === 0 && endHour - startHour === 1){
+        //   height = 100;
+        // } else {
+        //   height = endMinute - startMinute;
+        // }
+
+      //   $scope.hours[startHour-8].events.push({
+      //     height: height+'px',
+      //     marginTop: startMinute+'px',
+      //     background: 'red',
+      //     opacity: 0.7
+      //   });
+      // }
+    });
+    clj($scope.hours)
+  };
+
+  angular.element(document).ready(function () {
+    $scope.listCals();
+  });
 });

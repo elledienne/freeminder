@@ -1,1 +1,16 @@
 /* Empty. Add your own CSS if you like */
+
+.time-row{
+  padding: 0;
+  height: 100px;
+  overflow: visible;
+}
+
+.time-label{
+  position: absolute;
+  margin-top: 10px;
+  margin-left: 10px;
+  /*z-index: 99900;*/
+  color: grey;
+  font-size: 13px;
+}
