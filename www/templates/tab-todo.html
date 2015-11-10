@@ -11,7 +11,7 @@
   </div>
   </ion-header-bar>
   <ion-content class="cal">
-    <ion-list>
+    <ion-list delegate-handle="listTask" can-swipe="true">
       <!-- <ion-item class="item-input"> -->
        <!--  <div class="list"> -->
           <!-- <label class="item item-input"> -->
@@ -19,9 +19,10 @@
           <!-- </label> -->
         <!-- </div> -->
       <!-- </ion-item> -->
-      <ion-item ng-repeat="todo in todos" ng-click="setDetailToShow(todo.id)">
+      <ion-item ng-repeat="todo in todos track by $index" ng-click="setDetailToShow(todo.id)">
         <div>{{todo.title}}</div><div> Priority: {{todo.priority}}</div>
         <div ng-show='showDetail === todo.id'>Extra setting, displayed only when required ;)</div>
+        <ion-option-button class="button-assertive icon ion-trash-a" ng-click="removeTask($index)"></ion-option-button>
       </ion-item>
     </ion-list>
   </ion-content>

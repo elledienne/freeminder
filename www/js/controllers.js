@@ -1,29 +1,7 @@
 angular.module('starter.controllers', [])
 
-.controller('TodosCtrl', function($scope, $localstorage) {
-  $scope.todos
-    // {
-    //   id: 3,
-    //   title: 'Buy stuff',
-    //   priority: 5
-    // },
-    // {
-    //   id: 2,
-    //   title: 'Study angular',
-    //   priority: 10
-    // },
-    // {
-    //   id: 1,
-    //   title: 'buy coffee',
-    //   priority: 2
-    // },
-    // {
-    //   id: 0,
-    //   title: 'Do shits',
-    //   priority: 4
-    // },
-  //];
-
+.controller('TodosCtrl', function($scope, $localstorage, $ionicListDelegate, $cordovaKeyboard) {
+  $scope.todos;
   $scope.showDetail = null;
 
   $scope.setDetailToShow = function(id){
@@ -38,6 +16,7 @@ angular.module('starter.controllers', [])
   $scope.max = 5;
 
   $scope.createNewTask = function(){
+    $cordovaKeyboard.close();
     var newTask = {
       id: $scope.todos.length !== 0 ? $scope.todos[0].id+1 : 0,
       title: $scope.newTaskInput,
@@ -55,19 +34,18 @@ angular.module('starter.controllers', [])
       $scope.todos = _.flatten(tasks);
     }
   };
-  
+
+  $scope.removeTask = function(index){
+    $scope.todos.splice(index, 1);
+    $ionicListDelegate.$getByHandle('listTask').closeOptionButtons();
+    $localstorage.setObject('tasks', $scope.todos);
+  };
+
   loadTasks();
 })
 
-.controller('CalCtrl', function($scope, $cordovaCalendar, $q, moment, _) {
-    
-  // $scope.zIndex = 0;
-  // $scope.getZIndex = Calendar.getZIndex;
-    // $scope.getZIndex = function(){
-    //   $scope.zIndex--;
-    //   return {'z-index': $scope.zIndex};
-    // };
-  
+.controller('CalCtrl', function($scope, $cordovaCalendar, $q, moment, _, $localstorage) {
+  var tasksToPlan;
   $scope.hours = [
     {
       cellProp: {
@@ -76,16 +54,7 @@ angular.module('starter.controllers', [])
         time: 'AM',
         style: { 'zIndex': 0}
       },
-      events: [
-        // {
-        //   height: '100px',
-        //   marginTop: '40px',
-        //   background: 'red',
-        //   width: '100%',
-        //   position: 'absolute',
-        //   opacity: 0.7
-        // }
-      ]
+      events: []
     },
     {
       cellProp: {
@@ -215,10 +184,6 @@ angular.module('starter.controllers', [])
   ];
 
 
-  // var err = function(err){
-  //   console.log('ERROR: ', err);
-  // };
-
   var clj = function(message){
     console.log(JSON.stringify(message));
   };
@@ -235,6 +200,7 @@ angular.module('starter.controllers', [])
         //normalizeEvents(result)
         $scope.calEvents = sortEvents(result);
         parseEvent($scope.calEvents);
+
       });
   };
 
@@ -272,8 +238,32 @@ angular.module('starter.controllers', [])
     return events;
   };
 
+
+  var sortTask = function(tasks){
+    if(tasks){
+      tasks.sort(function(a, b){
+        if(a.priority > a.priority){
+          return -1;
+        } else {
+          return 1;
+        }
+      });
+    }
+    clj(tasks);
+  };
+
+
+  $scope.$on('$ionicView.enter', function(e) {
+    tasksToPlan = $localstorage.getObject('tasks', 'null');
+    sortTask(tasksToPlan);
+    //addTaskWhenFree(tasksToPlan);
+  });
+  
   var parseEvent = function(events){
-    console.log('here');
+    //console.log('here');
+    var freeSpots = [];
+    var prevEndDate = null;
+
     events.forEach(function(event){
       var startHour = new moment.utc(event.startDate, 'YYYY-MM-DD HH:mm:ss').hour();
       var endHour = new moment.utc(event.startDate, 'YYYY-MM-DD HH:mm:ss').hour();
@@ -282,27 +272,118 @@ angular.module('starter.controllers', [])
 
       var startDate = new moment.utc(event.startDate, 'YYYY-MM-DD HH:mm:ss');
       var endDate = new moment.utc(event.endDate, 'YYYY-MM-DD HH:mm:ss');
-      
       var duration = startDate.diff(endDate, 'minutes');
-      
-      $scope.hours[startHour-8].events.push({
-          height: (100 * Math.abs(duration))/60+'px',
-          marginTop: startMinute+'px',
+
+      if(!prevEndDate){
+        var height = startMinute !== 0 ? startMinute : 60;
+        $scope.hours[0].events.push({
+          height: (100 * height)/60+'px',
+          marginTop: 0+'px',
           marginLeft: '50px',
           // marginRigth: '20px',
-          background: 'red',
+          background: 'blue',
           opacity: 0.7,
           width: '85%',
           position: 'absolute',
           'border-radius': '5px',
           'box-shadow': '0 0 5px #888888'
         });
+        freeSpots.push({
+          start: new moment.utc('2015-11-10 09:00:00', 'YYYY-MM-DD HH:mm:ss'),
+          end: height === 60 ?
+            new moment.utc('2015-11-10 10:00:00', 'YYYY-MM-DD HH:mm:ss') :
+            new moment.utc('2015-11-10 09:'+ height +':00', 'YYYY-MM-DD HH:mm:ss')
+        });
+      } else {
+        console.log('qui')
+        var height = startDate.diff(prevEndDate, 'minutes');
+        var prevMinutes = prevEndDate.minute();
+        console.log('prevMinutes', prevMinutes);
+        var prevHour = prevEndDate.hour();
+        console.log('prevHour', prevHour)
+        $scope.hours[prevHour-8].events.push({
+          height: (100 * Math.abs(height))/60+'px',
+          marginTop: (100 * prevMinutes) / 60+'px',
+          marginLeft: '50px',
+          // marginRigth: '20px',
+          background: 'blue',
+          opacity: 0.7,
+          width: '85%',
+          position: 'absolute',
+          'border-radius': '5px',
+          'box-shadow': '0 0 5px #888888'
+        });
+        freeSpots.push({
+          start: prevEndDate,
+          end: startDate
+        });
+      }
+      prevEndDate = endDate || true;
+      console.log(prevEndDate);
+
+      $scope.hours[startHour-8].events.push({
+        height: (100 * Math.abs(duration))/60+'px',
+        marginTop: (100 * startMinute)/60+'px',
+        marginLeft: '50px',
+        // marginRigth: '20px',
+        background: 'red',
+        opacity: 0.7,
+        width: '85%',
+        position: 'absolute',
+        'border-radius': '5px',
+        'box-shadow': '0 0 5px #888888'
+      });
+
       $scope.hours[startHour-8].cellProp.eventTitle = event.title;
       
     });
-
+    
+    clj(freeSpots);
     clj($scope.hours)
   };
+
+  // var addTaskWhenFree = function(tasks){
+
+  //   tasks.forEach(function(task){
+  //     $scope.hours.some(function(hour){
+  //       if(hour.events.length === 0){
+  //         hour.events.push({
+  //           height: (100 * 50)/60+'px',
+  //           marginTop: 0+'px',
+  //           marginLeft: '50px',
+  //           // marginRigth: '20px',
+  //           background: 'blue',
+  //           opacity: 0.7,
+  //           width: '85%',
+  //           position: 'absolute',
+  //           'border-radius': '5px',
+  //           'box-shadow': '0 0 5px #888888'
+  //         });
+  //         return true;
+  //       }
+  //     })
+  //   })
+
+
+    // $scope.hours.forEach(function(hour){
+    //   if(hour.events.length === 0){
+    //     hour.events.push(
+    //       {
+    //         height: (100 * 50)/60+'px',
+    //         marginTop: '0px',
+    //         marginLeft: '50px',
+    //         // marginRigth: '20px',
+    //         background: 'blue',
+    //         opacity: 0.7,
+    //         width: '85%',
+    //         position: 'absolute',
+    //         'border-radius': '5px',
+    //         'box-shadow': '0 0 5px #888888'
+    //       }
+    //   )
+    //   }
+    // })
+  // };
 
   angular.element(document).ready(function () {
     $scope.listCals();
