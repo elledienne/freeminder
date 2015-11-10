@@ -1,7 +1,7 @@
 angular.module('starter.controllers', [])
 
 .controller('TodosCtrl', function($scope, $localstorage, $ionicListDelegate, $cordovaKeyboard) {
-  $scope.todos;
+  $scope.todos = null;
   $scope.showDetail = null;
 
   $scope.setDetailToShow = function(id){
@@ -46,6 +46,7 @@ angular.module('starter.controllers', [])
 
 .controller('CalCtrl', function($scope, $cordovaCalendar, $q, moment, _, $localstorage) {
   var tasksToPlan;
+  var freeSpots;
   $scope.hours = [
     {
       cellProp: {
@@ -254,6 +255,10 @@ angular.module('starter.controllers', [])
 
 
   $scope.$on('$ionicView.enter', function(e) {
+    angular.element(document).ready(function () {
+      freeSpots = [];
+      $scope.listCals();
+    });
     tasksToPlan = $localstorage.getObject('tasks', 'null');
     sortTask(tasksToPlan);
     //addTaskWhenFree(tasksToPlan);
@@ -261,7 +266,6 @@ angular.module('starter.controllers', [])
   
   var parseEvent = function(events){
     //console.log('here');
-    var freeSpots = [];
     var prevEndDate = null;
 
     events.forEach(function(event){
@@ -274,20 +278,23 @@ angular.module('starter.controllers', [])
       var endDate = new moment.utc(event.endDate, 'YYYY-MM-DD HH:mm:ss');
       var duration = startDate.diff(endDate, 'minutes');
 
+      var height;
+
       if(!prevEndDate){
-        var height = startMinute !== 0 ? startMinute : 60;
-        $scope.hours[0].events.push({
-          height: (100 * height)/60+'px',
-          marginTop: 0+'px',
-          marginLeft: '50px',
-          // marginRigth: '20px',
-          background: 'blue',
-          opacity: 0.7,
-          width: '85%',
-          position: 'absolute',
-          'border-radius': '5px',
-          'box-shadow': '0 0 5px #888888'
-        });
+        height = startMinute !== 0 ? startMinute : 60;
+        // $scope.hours[0].events.push({
+        //   height: (100 * height)/60+'px',
+        //   marginTop: 0+'px',
+        //   marginLeft: '50px',
+        //   // marginRigth: '20px',
+        //   background: 'blue',
+        //   opacity: 0.7,
+        //   width: '85%',
+        //   position: 'absolute',
+        //   'border-radius': '5px',
+        //   'box-shadow': '0 0 5px #888888'
+        // });
+        addEvent(0, height, 0, 'blue');
         freeSpots.push({
           start: new moment.utc('2015-11-10 09:00:00', 'YYYY-MM-DD HH:mm:ss'),
           end: height === 60 ?
@@ -295,51 +302,100 @@ angular.module('starter.controllers', [])
             new moment.utc('2015-11-10 09:'+ height +':00', 'YYYY-MM-DD HH:mm:ss')
         });
       } else {
-        console.log('qui')
-        var height = startDate.diff(prevEndDate, 'minutes');
-        var prevMinutes = prevEndDate.minute();
-        console.log('prevMinutes', prevMinutes);
-        var prevHour = prevEndDate.hour();
-        console.log('prevHour', prevHour)
-        $scope.hours[prevHour-8].events.push({
-          height: (100 * Math.abs(height))/60+'px',
-          marginTop: (100 * prevMinutes) / 60+'px',
-          marginLeft: '50px',
-          // marginRigth: '20px',
-          background: 'blue',
-          opacity: 0.7,
-          width: '85%',
-          position: 'absolute',
-          'border-radius': '5px',
-          'box-shadow': '0 0 5px #888888'
-        });
-        freeSpots.push({
-          start: prevEndDate,
-          end: startDate
-        });
+        //console.log('qui')
+        height = startDate.diff(prevEndDate, 'minutes');
+        if(height !== 0){
+          var prevMinutes = prevEndDate.minute();
+          //console.log('prevMinutes', prevMinutes);
+          var prevHour = prevEndDate.hour();
+          //console.log('prevHour', prevHour)
+          // $scope.hours[prevHour-8].events.push({
+          //   height: (100 * Math.abs(height))/60+'px',
+          //   marginTop: (100 * prevMinutes) / 60+'px',
+          //   marginLeft: '50px',
+          //   // marginRigth: '20px',
+          //   background: 'blue',
+          //   opacity: 0.7,
+          //   width: '85%',
+          //   position: 'absolute',
+          //   'border-radius': '5px',
+          //   'box-shadow': '0 0 5px #888888'
+          // });
+          addEvent(prevHour-8, height, prevMinutes, 'blue');
+          freeSpots.push({
+            start: prevEndDate,
+            end: startDate
+          });
+        }
       }
       prevEndDate = endDate || true;
       console.log(prevEndDate);
 
-      $scope.hours[startHour-8].events.push({
-        height: (100 * Math.abs(duration))/60+'px',
-        marginTop: (100 * startMinute)/60+'px',
-        marginLeft: '50px',
-        // marginRigth: '20px',
-        background: 'red',
-        opacity: 0.7,
-        width: '85%',
-        position: 'absolute',
-        'border-radius': '5px',
-        'box-shadow': '0 0 5px #888888'
-      });
-
-      $scope.hours[startHour-8].cellProp.eventTitle = event.title;
+      // $scope.hours[startHour-8].events.push({
+      //   height: (100 * Math.abs(duration))/60+'px',
+      //   marginTop: (100 * startMinute)/60+'px',
+      //   marginLeft: '50px',
+      //   // marginRigth: '20px',
+      //   background: 'red',
+      //   opacity: 0.7,
+      //   width: '85%',
+      //   position: 'absolute',
+      //   'border-radius': '5px',
+      //   'box-shadow': '0 0 5px #888888'
+      // });
+      
+      var isDuplicate = $scope.hours[startHour-8].cellProp.eventTitle === event.title;
+      console.log(isDuplicate);
+      if(!isDuplicate){
+        addEvent(startHour-8, duration, startMinute, 'red');
+        $scope.hours[startHour-8].cellProp.eventTitle = event.title;
+      }
       
     });
     
+    //detect free space at the end of the day
+    var prevMinutes = prevEndDate.minute();
+    var prevHour = prevEndDate.hour();
+    var lastHour = new moment.utc('2015-11-10 21:00:00', 'YYYY-MM-DD HH:mm:ss');
+    var height = lastHour.diff(prevEndDate, 'minutes');
+    if(prevHour < 21){
+      // $scope.hours[prevHour-8].events.push({
+      //   height: (100 * Math.abs(height))/60+'px',
+      //   marginTop: (100 * prevMinutes) / 60+'px',
+      //   marginLeft: '50px',
+      //   // marginRigth: '20px',
+      //   background: 'blue',
+      //   opacity: 0.7,
+      //   width: '85%',
+      //   position: 'absolute',
+      //   'border-radius': '5px',
+      //   'box-shadow': '0 0 5px #888888'
+      // });
+      addEvent(prevHour-8, height, prevMinutes, 'blue');
+      freeSpots.push({
+        start: prevEndDate,
+        end: lastHour
+      });
+    }
+
     clj(freeSpots);
-    clj($scope.hours)
+    clj($scope.hours);
+  };
+
+
+  var addEvent = function(index, height, top, color){
+    $scope.hours[index].events.push({
+      height: (100 * Math.abs(height))/60+'px',
+      marginTop: (100 * top) / 60+'px',
+      marginLeft: '50px',
+      // marginRigth: '20px',
+      background: color,
+      opacity: 0.7,
+      width: '85%',
+      position: 'absolute',
+      'border-radius': '5px',
+      'box-shadow': '0 0 5px #888888'
+    });
   };
 
   // var addTaskWhenFree = function(tasks){
@@ -386,6 +442,6 @@ angular.module('starter.controllers', [])
   // };
 
   angular.element(document).ready(function () {
-    $scope.listCals();
+    // $scope.listCals();
   });
 });
