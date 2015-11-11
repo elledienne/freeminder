@@ -15,17 +15,34 @@ angular.module('starter.controllers', [])
   $scope.rate = 3;
   $scope.max = 5;
 
+  var setStarRating = function(rating){
+    var star = Math.floor(rating * 5 / 100);
+    var starsDiv = ''
+    for(var i = 0; i < star; i++){
+      starsDiv += '<i class="icon ion-ios-star"></i>'
+    }
+    if(starsDiv.length === 0){
+      starsDiv = '<i class="ion-ios-star-outline"></i>'
+    }
+    return starsDiv;
+  }
+
   $scope.createNewTask = function(){
     $cordovaKeyboard.close();
+    var prior = $scope.priority !== undefined ? parseInt($scope.priority) : 50;
     var newTask = {
       id: $scope.todos.length !== 0 ? $scope.todos[0].id+1 : 0,
       title: $scope.newTaskInput,
-      priority: $scope.priority !== undefined ? parseInt($scope.priority) : 50
+      priority: prior,
+      stars: setStarRating(prior)
     };
+    console.log(setStarRating(prior))
     $scope.newTaskInput = '';
     $scope.todos.unshift(newTask);
     $localstorage.setObject('tasks', $scope.todos);
   };
+
+  
 
   var loadTasks = function(){
     var tasks = $localstorage.getObject('tasks', 'null');

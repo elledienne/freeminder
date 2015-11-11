@@ -9,8 +9,9 @@ input[type="text"].input-todo{
   margin-left: 10px;
   width: 94%;
   text-align: center;
+  font-style: italic;
   -webkit-animation-iteration-count: infinite;
-  -webkit-animation-duration: 1s;
+  -webkit-animation-duration: 2s;
   -webkit-animation-name: fadeText;
 }
 
@@ -37,6 +38,15 @@ input[type="text"].input-todo{
   font-size: 13px;
 }
 
+.item-title{
+  float: left;
+  font-size: 20px;
+}
+
+.item-rating{
+  float: right;
+}
+
 .eventTitle{
   color: white;
   padding: 10px;
@@ -53,8 +63,14 @@ input[type="text"].input-todo{
         /*display: block ; */
         opacity: 0.5;
     }
+    25% {
+        opacity: 0.8;
+    }
     50% {
-        opacity: 1
+        opacity: 1;
+    }
+    75% {
+        opacity: 0.8;
     }
     100% {
         /*display: block ; */
