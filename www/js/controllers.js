@@ -17,15 +17,15 @@ angular.module('starter.controllers', [])
 
   var setStarRating = function(rating){
     var star = Math.floor(rating * 5 / 100);
-    var starsDiv = ''
+    var starsDiv = '';
     for(var i = 0; i < star; i++){
-      starsDiv += '<i class="icon ion-ios-star"></i>'
+      starsDiv += '<i class="icon ion-ios-star"></i>';
     }
     if(starsDiv.length === 0){
-      starsDiv = '<i class="ion-ios-star-outline"></i>'
+      starsDiv = '<i class="ion-ios-star-outline"></i>';
     }
     return starsDiv;
-  }
+  };
 
   $scope.createNewTask = function(){
     $cordovaKeyboard.close();
@@ -36,7 +36,7 @@ angular.module('starter.controllers', [])
       priority: prior,
       stars: setStarRating(prior)
     };
-    console.log(setStarRating(prior))
+    //console.log(setStarRating(prior))
     $scope.newTaskInput = '';
     $scope.todos.unshift(newTask);
     $localstorage.setObject('tasks', $scope.todos);
@@ -434,7 +434,7 @@ angular.module('starter.controllers', [])
           var newSpots = [];
           for(var g = 0; g < numberOfFreeSpots; g++){
 
-            addEvent(startHour-8, 60, endMinute, 'green')
+            addEvent(startHour-8, 60, endMinute, 'green');
             $scope.hours[startHour-8].cellProp.eventTitle = task.title;
             //console.log(startHour, endMinute)
             endMinute = endMinute;
@@ -464,7 +464,7 @@ angular.module('starter.controllers', [])
             // console.log('START',startHour);
             startHour++;
             startMinute = 0;
-            i++
+            i++;
             task = tasks[i];
             if(task === undefined){
               break;
@@ -483,7 +483,7 @@ angular.module('starter.controllers', [])
       } else {
         // console.log('No more free spots for today');
       } 
-    };
+    }
 
     // console.log($scope.hours)
   };
