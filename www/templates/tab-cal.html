@@ -9,7 +9,7 @@
       <ion-item ng-style="hour.cellProp.style" ng-repeat="hour in hours" class="time-row">
         <div id="{{hour.cellProp.codeTime}}">
           <div class="time-label">{{hour.cellProp.hour}}{{hour.cellProp.time.toLowerCase()}}</div>
-          <div ng-style="event" ng-repeat="event in hour.events">
+          <div ng-style="event" class="animate-in-event" ng-repeat="event in hour.events">
             <div class="eventTitle">{{hour.cellProp.eventTitle}}</div>
           </div>
 

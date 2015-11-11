@@ -1,9 +1,8 @@
 <ion-view view-title="Freeminder">
   <ion-header-bar class="bar bar-subheader new-todo">
     <form ng-submit="createNewTask()">
-      <input class="input-todo" type="text" placeholder="New Todo..." ng-model="newTaskInput">
+      <input class="input-todo" type="text" placeholder="Add todo here..." ng-model="newTaskInput">
     </form>
-    <!-- <rating class="rating-stars" ng-model="rate" max="max"></rating> -->
     <div class=" range">
       <i class="icon ion-ios-star-outline"></i>
       <input type="range" min="0" max="100" value="50" name="priority" ng-model="priority">
@@ -12,13 +11,6 @@
   </ion-header-bar>
   <ion-content class="cal">
     <ion-list delegate-handle="listTask" can-swipe="true">
-      <!-- <ion-item class="item-input"> -->
-       <!--  <div class="list"> -->
-          <!-- <label class="item item-input"> -->
-            <!-- <input type="text" placeholder="New Todo..."> -->
-          <!-- </label> -->
-        <!-- </div> -->
-      <!-- </ion-item> -->
       <ion-item ng-repeat="todo in todos track by $index" ng-click="setDetailToShow(todo.id)">
         <div>{{todo.title}}</div><div> Priority: {{todo.priority}}</div>
         <div ng-show='showDetail === todo.id'>Extra setting, displayed only when required ;)</div>

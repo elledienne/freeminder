@@ -20,8 +20,9 @@ angular.module('starter.controllers', [])
     var newTask = {
       id: $scope.todos.length !== 0 ? $scope.todos[0].id+1 : 0,
       title: $scope.newTaskInput,
-      priority: $scope.priority || 50
+      priority: $scope.priority !== undefined ? parseInt($scope.priority) : 50
     };
+    $scope.newTaskInput = '';
     $scope.todos.unshift(newTask);
     $localstorage.setObject('tasks', $scope.todos);
   };
@@ -46,162 +47,29 @@ angular.module('starter.controllers', [])
 
 .controller('CalCtrl', function($scope, $cordovaCalendar, $q, moment, _, $localstorage) {
   var tasksToPlan;
-  var freeSpots;
-  $scope.hours = [
-    {
-      cellProp: {
-        hour: 8,
-        codeTime: 8,
-        time: 'AM',
-        style: { 'zIndex': 0}
-      },
-      events: []
-    },
-    {
-      cellProp: {
-        hour: 9,
-        codeTime: 9,
-        time: 'AM',
-        style: { 'zIndex': -1}
-      },
-      events: []
-    },
-    {
-      cellProp: {
-        hour: 10,
-        codeTime: 10,
-        time: 'AM',
-        style: { 'zIndex': -2}      
-      },
-      events: []
-    },
-    {
-      cellProp: {
-        hour: 11,
-        codeTime: 11,
-        time: 'AM',
-        style: { 'zIndex': -3}
-      },
-      events: []
-    },
-    {
-      cellProp: {
-      hour: 12,
-      codeTime: 12,
-      time: 'AM',
-      style: { 'zIndex': -4}
-      },
-      events: []
-    },
-    {
-      cellProp: {
-        hour: 1,
-      codeTime: 13,
-      time: 'PM',
-      style: { 'zIndex': -5}
-      },
-      events: []
-    },
-    {
-      cellProp: {
-      hour: 2,
-      codeTime: 14,
-      time: 'PM',
-      style: { 'zIndex': -6}
-      },
-      events: []
-
-    },
-    {
-      cellProp: {
-      hour: 3,
-      codeTime: 15,
-      time: 'PM',
-      style: { 'zIndex': -7}
-      },
-      events: []
-
-    },
-    {
-      cellProp: {
-      hour: 4,
-      codeTime: 16,
-      time: 'PM',
-      style: { 'zIndex': -8}
-      },
-      events: []
-
-    },
-    {
-      cellProp: {
-      hour: 5,
-      codeTime: 17,
-      time: 'PM',
-      style: { 'zIndex': -9}
-      },
-      events: []
-
-    },
-    {
-      cellProp: {
-      hour: 6,
-      codeTime: 18,
-      time: 'PM',
-      style: { 'zIndex': -10}
-      },
-      events: []
-
-    },
-    {
-      cellProp: {
-      hour: 7,
-      codeTime: 19,
-      time: 'PM',
-      style: { 'zIndex': -11}
-      },
-      events: []
-
-    },
-    {
-      cellProp: {
-      hour: 8,
-      codeTime: 20,
-      time: 'PM',
-      style: { 'zIndex': -12}
-      },
-      events: []
-
-    },
-    {
-      cellProp: {
-      hour: 9,
-      codeTime: 21,
-      time: 'PM',
-      style: { 'zIndex': -13}
-      },
-      events: []
-
-    },
-  ];
+  var freeSpots = [];
+  
 
 
   var clj = function(message){
     console.log(JSON.stringify(message));
   };
 
-  $scope.listCals = function(){
+  $scope.listCals = function(callback){
     $cordovaCalendar.listCalendars()
       .then(function (result) {
         //console.log('SUCCESS: ', JSON.stringify(result));
         return eventsInCal(result);
       }, Calendar.err)
       .then(function(result){
-        console.log('TEST', JSON.stringify(result));
+        //console.log('TEST', JSON.stringify(result));
         result = _.flatten(result);
         //normalizeEvents(result)
         $scope.calEvents = sortEvents(result);
         parseEvent($scope.calEvents);
-
+        //console.log('PARSE COMPLETED')
+        clj(freeSpots);
+        callback();
       });
   };
 
@@ -226,16 +94,14 @@ angular.module('starter.controllers', [])
       
       var diff = currTime.diff(nextTime);
 
-      console.log('curr', curr.startDate);
-      console.log('next', next.startDate);
-      console.log('diff', diff);
+      // console.log('curr', curr.startDate);
+      // console.log('next', next.startDate);
+      // console.log('diff', diff);
       
       
       return diff;
 
     });
-
-    clj(events);
     return events;
   };
 
@@ -243,27 +109,161 @@ angular.module('starter.controllers', [])
   var sortTask = function(tasks){
     if(tasks){
       tasks.sort(function(a, b){
-        if(a.priority > a.priority){
-          return -1;
-        } else {
-          return 1;
-        }
+        return b.priority - a.priority;
       });
     }
-    clj(tasks);
   };
 
 
-  $scope.$on('$ionicView.enter', function(e) {
+  $scope.$on('$ionicView.beforeEnter', function(e) {
     angular.element(document).ready(function () {
       freeSpots = [];
-      $scope.listCals();
+      $scope.hours = [
+        {
+          cellProp: {
+            hour: 8,
+            codeTime: 8,
+            time: 'AM',
+            style: { 'zIndex': 0}
+          },
+          events: []
+        },
+        {
+          cellProp: {
+            hour: 9,
+            codeTime: 9,
+            time: 'AM',
+            style: { 'zIndex': -1}
+          },
+          events: []
+        },
+        {
+          cellProp: {
+            hour: 10,
+            codeTime: 10,
+            time: 'AM',
+            style: { 'zIndex': -2}      
+          },
+          events: []
+        },
+        {
+          cellProp: {
+            hour: 11,
+            codeTime: 11,
+            time: 'AM',
+            style: { 'zIndex': -3}
+          },
+          events: []
+        },
+        {
+          cellProp: {
+          hour: 12,
+          codeTime: 12,
+          time: 'AM',
+          style: { 'zIndex': -4}
+          },
+          events: []
+        },
+        {
+          cellProp: {
+            hour: 1,
+          codeTime: 13,
+          time: 'PM',
+          style: { 'zIndex': -5}
+          },
+          events: []
+        },
+        {
+          cellProp: {
+          hour: 2,
+          codeTime: 14,
+          time: 'PM',
+          style: { 'zIndex': -6}
+          },
+          events: []
+
+        },
+        {
+          cellProp: {
+          hour: 3,
+          codeTime: 15,
+          time: 'PM',
+          style: { 'zIndex': -7}
+          },
+          events: []
+
+        },
+        {
+          cellProp: {
+          hour: 4,
+          codeTime: 16,
+          time: 'PM',
+          style: { 'zIndex': -8}
+          },
+          events: []
+
+        },
+        {
+          cellProp: {
+          hour: 5,
+          codeTime: 17,
+          time: 'PM',
+          style: { 'zIndex': -9}
+          },
+          events: []
+
+        },
+        {
+          cellProp: {
+          hour: 6,
+          codeTime: 18,
+          time: 'PM',
+          style: { 'zIndex': -10}
+          },
+          events: []
+
+        },
+        {
+          cellProp: {
+          hour: 7,
+          codeTime: 19,
+          time: 'PM',
+          style: { 'zIndex': -11}
+          },
+          events: []
+
+        },
+        {
+          cellProp: {
+          hour: 8,
+          codeTime: 20,
+          time: 'PM',
+          style: { 'zIndex': -12}
+          },
+          events: []
+
+        },
+        {
+          cellProp: {
+          hour: 9,
+          codeTime: 21,
+          time: 'PM',
+          style: { 'zIndex': -13}
+          },
+          events: []
+
+        },
+      ];
+      $scope.listCals(function(){
+        // console.log('READY FOR NEXT OP')
+        tasksToPlan = $localstorage.getObject('tasks', 'null');
+        sortTask(tasksToPlan);
+        addTaskWhenFree(tasksToPlan);
+      });
     });
-    tasksToPlan = $localstorage.getObject('tasks', 'null');
-    sortTask(tasksToPlan);
-    //addTaskWhenFree(tasksToPlan);
   });
   
+
   var parseEvent = function(events){
     //console.log('here');
     var prevEndDate = null;
@@ -282,24 +282,12 @@ angular.module('starter.controllers', [])
 
       if(!prevEndDate){
         height = startMinute !== 0 ? startMinute : 60;
-        // $scope.hours[0].events.push({
-        //   height: (100 * height)/60+'px',
-        //   marginTop: 0+'px',
-        //   marginLeft: '50px',
-        //   // marginRigth: '20px',
-        //   background: 'blue',
-        //   opacity: 0.7,
-        //   width: '85%',
-        //   position: 'absolute',
-        //   'border-radius': '5px',
-        //   'box-shadow': '0 0 5px #888888'
-        // });
-        addEvent(0, height, 0, 'blue');
+        
         freeSpots.push({
-          start: new moment.utc('2015-11-10 09:00:00', 'YYYY-MM-DD HH:mm:ss'),
+          start: new moment.utc('2015-11-11 08:00:00', 'YYYY-MM-DD HH:mm:ss'),
           end: height === 60 ?
-            new moment.utc('2015-11-10 10:00:00', 'YYYY-MM-DD HH:mm:ss') :
-            new moment.utc('2015-11-10 09:'+ height +':00', 'YYYY-MM-DD HH:mm:ss')
+            new moment.utc('2015-11-11 09:00:00', 'YYYY-MM-DD HH:mm:ss') :
+            new moment.utc('2015-11-11 09:'+ height +':00', 'YYYY-MM-DD HH:mm:ss')
         });
       } else {
         //console.log('qui')
@@ -321,7 +309,7 @@ angular.module('starter.controllers', [])
           //   'border-radius': '5px',
           //   'box-shadow': '0 0 5px #888888'
           // });
-          addEvent(prevHour-8, height, prevMinutes, 'blue');
+          // addEvent(prevHour-8, height, prevMinutes, 'transparent');
           freeSpots.push({
             start: prevEndDate,
             end: startDate
@@ -329,7 +317,7 @@ angular.module('starter.controllers', [])
         }
       }
       prevEndDate = endDate || true;
-      console.log(prevEndDate);
+      // console.log(prevEndDate);
 
       // $scope.hours[startHour-8].events.push({
       //   height: (100 * Math.abs(duration))/60+'px',
@@ -345,7 +333,8 @@ angular.module('starter.controllers', [])
       // });
       
       var isDuplicate = $scope.hours[startHour-8].cellProp.eventTitle === event.title;
-      console.log(isDuplicate);
+      // console.log(isDuplicate);
+      //isDuplicate = false;
       if(!isDuplicate){
         addEvent(startHour-8, duration, startMinute, 'red');
         $scope.hours[startHour-8].cellProp.eventTitle = event.title;
@@ -356,7 +345,7 @@ angular.module('starter.controllers', [])
     //detect free space at the end of the day
     var prevMinutes = prevEndDate.minute();
     var prevHour = prevEndDate.hour();
-    var lastHour = new moment.utc('2015-11-10 21:00:00', 'YYYY-MM-DD HH:mm:ss');
+    var lastHour = new moment.utc('2015-11-11 21:00:00', 'YYYY-MM-DD HH:mm:ss');
     var height = lastHour.diff(prevEndDate, 'minutes');
     if(prevHour < 21){
       // $scope.hours[prevHour-8].events.push({
@@ -371,15 +360,15 @@ angular.module('starter.controllers', [])
       //   'border-radius': '5px',
       //   'box-shadow': '0 0 5px #888888'
       // });
-      addEvent(prevHour-8, height, prevMinutes, 'blue');
+      // addEvent(prevHour-8, height, prevMinutes, 'transparent');
       freeSpots.push({
         start: prevEndDate,
         end: lastHour
       });
     }
 
-    clj(freeSpots);
-    clj($scope.hours);
+    // clj(freeSpots);
+    // clj($scope.hours);
   };
 
 
@@ -398,48 +387,90 @@ angular.module('starter.controllers', [])
     });
   };
 
-  // var addTaskWhenFree = function(tasks){
+  var addTaskWhenFree = function(tasks){
+    var spotToAssign;
+    //tasks.forEach(function(task){
+    for(var i = 0; i < tasks.length; i++){
+      var task = tasks[i];
 
-  //   tasks.forEach(function(task){
-  //     $scope.hours.some(function(hour){
-  //       if(hour.events.length === 0){
-  //         hour.events.push({
-  //           height: (100 * 50)/60+'px',
-  //           marginTop: 0+'px',
-  //           marginLeft: '50px',
-  //           // marginRigth: '20px',
-  //           background: 'blue',
-  //           opacity: 0.7,
-  //           width: '85%',
-  //           position: 'absolute',
-  //           'border-radius': '5px',
-  //           'box-shadow': '0 0 5px #888888'
-  //         });
-  //         return true;
-  //       }
-  //     })
-  //   })
+      if(freeSpots.length > 0){
+        spotToAssign = freeSpots.shift();
+        var start = new moment.utc(spotToAssign.start);
+        var startHour = start.hour();
+        var startMinute = start.minute();
+        var end = new moment.utc(spotToAssign.end);
+        var endHour = end.hour();
+        var endMinute = end.minute();
+        var diff = end.diff(start, 'minutes');
 
+        if(diff <= 60 && diff >= 30) {
+          addEvent(startHour-8, diff, startMinute, 'green');
+          $scope.hours[startHour-8].cellProp.eventTitle = task.title;
+        } else if(diff % 60 === 0){
+          // var newSize = diff;
+          // while(newSize >= 70){
+          //   newSize /= 2;
+          // }
+          // console.log('New SIZE: ', newSize);
+          var numberOfFreeSpots = diff / 60;
+          //console.log('NEW SPOTS:', numberOfFreeSpots)
+          var newSpots = [];
+          for(var g = 0; g < numberOfFreeSpots; g++){
 
-    // $scope.hours.forEach(function(hour){
-    //   if(hour.events.length === 0){
-    //     hour.events.push(
-    //       {
-    //         height: (100 * 50)/60+'px',
-    //         marginTop: '0px',
-    //         marginLeft: '50px',
-    //         // marginRigth: '20px',
-    //         background: 'blue',
-    //         opacity: 0.7,
-    //         width: '85%',
-    //         position: 'absolute',
-    //         'border-radius': '5px',
-    //         'box-shadow': '0 0 5px #888888'
-    //       }
-    //   )
-    //   }
-    // })
-  // };
+            addEvent(startHour-8, 60, endMinute, 'green')
+            $scope.hours[startHour-8].cellProp.eventTitle = task.title;
+            //console.log(startHour, endMinute)
+            endMinute = endMinute;
+            // console.log(JSON.stringify(task),i)
+            i = i+1;
+            task = tasks[i];
+            // console.log(JSON.stringify(task),i);
+            startHour++;
+            var f = g;
+            //console.log('TASKS #######################',tasks);
+            if(task === undefined){
+              break;
+            } else if(i+1 === tasks.length || g+1 === numberOfFreeSpots){
+              //tasks.unshift(task);
+              i = i-1;
+              // console.log('TASKS #######################',tasks);
+            }
+            // console.log(startHour, endMinute)
+            //start;
+          }
+          
+        } else {
+          // console.log('HERE', diff)
+          while(startHour !== endHour){
+            addEvent(startHour-8, 60-startMinute, startMinute, 'green');
+            $scope.hours[startHour-8].cellProp.eventTitle = task.title;
+            // console.log('START',startHour);
+            startHour++;
+            startMinute = 0;
+            i++
+            task = tasks[i];
+            if(task === undefined){
+              break;
+            } else if(i === tasks.length){
+              //tasks.unshift(task);
+              i = i-1;
+              break;
+              // console.log('TASKS #######################',tasks);
+            }
+          }
+
+          //addEvent(startHour-8, diff, startMinute, 'green');
+        }
+
+        // clj(spotToAssign);
+      } else {
+        // console.log('No more free spots for today');
+      } 
+    };
+
+    // console.log($scope.hours)
+  };
+
 
   angular.element(document).ready(function () {
     // $scope.listCals();
