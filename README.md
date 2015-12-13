@@ -51,7 +51,4 @@ This app is developed with one main idea in mind: simplicity. We don't want you 
   If you have problem using the app, if you found a bug or for feature requests please open an issue here on GitHub
 
 ## The dev corner ##
-  > This app was built by Lorenzo De Nobili, software engineer in training. 
-
-## What users think about Freeminder ##
-  > 'Best app ever, it's not smarter than me but for sure is less lazy' - _Fred_
+  > This app was built by Lorenzo De Nobili, full-stack software engineer. 
