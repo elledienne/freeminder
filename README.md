@@ -41,9 +41,9 @@ This app is developed with one main idea in mind: simplicity. We don't want you 
 ## How to Get Started ##
   To get started follow this easy steps.
 
-  >1. Download the Ionic View app from HERE if you have an iPhone or from HERE if you have an Android device.
+  >1. Download the Ionic View app from [here](https://itunes.apple.com/us/app/ionic-view/id849930087?ls=1&mt=8) if you have an iPhone or from [here](https://play.google.com/store/apps/details?id=com.ionic.viewapp) if you have an Android device.
   >2. Start the app and click on the eye icon on the top left corner
-  >3. Insert this code: CODE.
+  >3. Insert this code: **794453E6**.
   >4. Press the 'Load app' button
   >5. Enjoy
 
