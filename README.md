@@ -1,4 +1,4 @@
-# Freeminder #
+# Freeminder # 
 
 Freeminder is a simple todo application that allows you to just free your mind! How often do you find yourself thinking about all the things you have to do today? With this app you can just remove them from your mind, put them in the app and let it keep track of them for you
 
